@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# 나의 시크릿들
+sequence.md
+config
