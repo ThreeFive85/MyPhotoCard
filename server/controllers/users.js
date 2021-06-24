@@ -26,7 +26,7 @@ export const signup = async(req, res) => { // async, await
             password: hashedPassword, 
         })
 
-        const token = jwt.sign({ email: data.email, id: data._id }, tokenPassword, { expiresIn: "1h"});
+        const token = jwt.sign({ email: data.email }, tokenPassword, { expiresIn: "1h"});
         const result = await connection.query('select * from users where id = ? ', [data[0].insertId]);
         const resultData = result[0][0];
         
@@ -53,7 +53,10 @@ export const signin = async(req, res) => { // async, await
 
         if(!isPasswordCorrect) return res.status(400).json({ message: "잘못된 암호입니다" });
 
-        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, tokenPassword, { expiresIn: "1h"});
+        const user = existingUser[0][0].email
+        //console.log("user", user)
+
+        const token = jwt.sign({ email: user }, tokenPassword, { expiresIn: "1h"});
 
         res.status(200).json({ result: existingUser[0][0], token });
     } catch (err) {
