@@ -26,3 +26,27 @@ export const getCards = async (req, res) => {
         connection.release();
     }
 }
+
+export const createCard = async (req, res) => {
+    const connection = await pool.getConnection();
+
+    const userEmail = req.userEmail;
+
+    const { title, message, tags, selectedFile } = req.body;
+
+    try {
+        const userId = await connection.query(`select id from users where email=?`, [userEmail]);
+        // console.log(userId[0][0].id)
+        const data = await connection.query('insert into cards set ?', { title: title, message: message,
+            tags: tags, selectedFile: selectedFile, createAt: new Date().toISOString().substr(0,10),
+            user_id: userId[0][0].id
+        });
+        const result = await connection.query('select * from cards where id = ?', [data[0].insertId])
+        res.status(201).json(result[0][0]);
+    } catch (error) {
+        console.log(error);
+        res.status(409).json({ message: error.message });
+    } finally {
+        connection.release();
+    }
+}
