@@ -1,3 +1,4 @@
+import e from 'express';
 import mysql from 'mysql2/promise';
 
 import { db } from '../config/db.js';
@@ -46,6 +47,48 @@ export const createCard = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(409).json({ message: error.message });
+    } finally {
+        connection.release();
+    }
+}
+
+export const updateCard = async (req, res) => {
+    const connection = await pool.getConnection();
+
+    const { id } = req.params;
+
+    const { title, message, tags, selectedFile } = req.body;
+
+    const query = `UPDATE cards SET title=?, message=?, tags=?, selectedFile=? WHERE id= ${id}`
+
+    try {
+
+        const [rows, fields] = await connection.execute(query, [title, message, tags, selectedFile]);
+        console.log(rows);
+
+        const result = await connection.execute(`select * from cards where id=${id}`);
+
+        res.json(result[0][0]);
+    } catch (error) {
+        console.log(error);
+        res.status(409).json({message: error.message});
+    } finally {
+        connection.release();
+    }
+}
+
+export const deleteCard = async (req, res) => {
+    const connection = await pool.getConnection();
+
+    const { id } = req.params;
+
+    try {
+        await connection.execute(`DELETE FROM cards WHERE id = ${id}`)
+
+        res.json({message: '해당 카드가 삭제되었습니다.'})
+    } catch (error) {
+        console.log(error);
+        res.status(409).json({message: error.message});
     } finally {
         connection.release();
     }
