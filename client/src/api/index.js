@@ -10,10 +10,10 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-// export const fetchPosts = () => API.get('/posts');
-// export const createPost = (newPost) => API.post('/posts', newPost);
-// export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
-// export const deletePost = (id) => API.delete(`/posts/${id}`);
+export const fetchCards = () => API.get('/cards');
+export const createCard = (newPost) => API.post('/cards', newPost);
+export const updateCard = (id, updatedPost) => API.patch(`/cards/${id}`, updatedPost);
+export const deleteCard = (id) => API.delete(`/cards/${id}`);
 
 export const signIn = (formData) => API.post('/user/signin', formData);
 export const signUp = (formData) => API.post('/user/signup', formData);
