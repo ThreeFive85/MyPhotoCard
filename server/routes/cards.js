@@ -1,13 +1,15 @@
 import express from 'express';
 
-import { getCards, createCard, updateCard, deleteCard } from '../controllers/cards.js';
+import { getCards, createCard, updateCard, deleteCard, getUserCards, lockCard } from '../controllers/cards.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.get('/', auth, getCards);
+router.get('/', getCards);
+router.get('/user', auth, getUserCards);
 router.post('/', auth, createCard);
 router.patch('/:id', auth, updateCard);
+router.patch('/:id/locked', auth, lockCard);
 router.delete('/:id', auth, deleteCard);
 
 export default router;
