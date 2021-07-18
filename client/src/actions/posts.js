@@ -1,4 +1,4 @@
-import { FETCH_ALL, CREATE, DELETE, UPDATE } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, DELETE, UPDATE, FETCH_USER } from '../constants/actionTypes';
 import * as api from '../api';
 
 // Action Creators
@@ -12,11 +12,31 @@ export const getCards = () => async (dispatch) => {
     }
 }
 
+export const getUserCards = () => async (dispatch) => {
+    try {
+        const { data } = await api.fetchUserCards();
+
+        dispatch({ type: FETCH_USER, payload: data })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 export const createCard = (post) => async (dispatch) => {
     try {
-        const { data } = await api.createCard(post);
+        // console.log('post', post.selectedFile)
+        // const formData = new FormData();
+        // formData.append("photo", post.selectedFile);
+        // console.log("formData", formData)
+        // try {
+        //     const res = await api.upload("/upload",post);
+        //           console.log("res.location", res.location);
+        //         } catch (ex) {
+        //           console.log(ex);
+        //         }
+        // const { data } = await api.createCard(post);
         // console.log("createCard", data)
-        dispatch({ type: CREATE, payload: data});
+        // dispatch({ type: CREATE, payload: data});
     } catch (error) {
         console.log(error);
     }
@@ -38,5 +58,14 @@ export const deleteCard = (id) => async (dispatch) => {
         dispatch({ type: DELETE, payload: id });
     } catch (error) {
         console.log(error);
+    }
+}
+
+export const lockCard = (id) => async (dispatch) => {
+    try {
+        const { data } = await api.lockCard(id);
+        dispatch({type: UPDATE, payload: data});
+    } catch (error) {
+        console.log(error.message);
     }
 }
