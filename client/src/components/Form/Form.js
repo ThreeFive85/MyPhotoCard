@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
-import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux';
-
 
 import useStyles from './styles';
 import { createCard, updateCard, getUserCards, getCards } from '../../actions/posts';
@@ -14,7 +12,7 @@ const Form = ({currentId, setCurrentId}) => {
         title: '',
         message: '',
         tags: '',
-        selectedFile: '',
+        photo: '',
     });
     const post = useSelector((state) => (currentId ? state.posts.find((message) => message.id === currentId) : null));
     const classes = useStyles();
@@ -27,12 +25,20 @@ const Form = ({currentId, setCurrentId}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    // console.log(postData);
+        // console.log(postData.photo);
+        const data = new FormData();
+
+        data.append('photo', postData.photo);
+        data.append('title', postData.title);
+        data.append('message', postData.message);
+        data.append('tags', postData.tags);
+        data.append('name', user?.result?.name);
+ 
         if (currentId) {
-            dispatch(updateCard(currentId, { ...postData, name: user?.result?.name }));
+            dispatch(updateCard(currentId, data));
             clear();
         } else {
-            dispatch(createCard({ ...postData, name: user?.result?.name }));
+            dispatch(createCard(data));
             clear();
         }
       };
@@ -43,7 +49,7 @@ const Form = ({currentId, setCurrentId}) => {
             title: '',
             message: '',
             tags: '',
-            selectedFile: '',
+            photo: '',
         })
     }
     
@@ -105,11 +111,10 @@ const Form = ({currentId, setCurrentId}) => {
                     })}
                 />
                 <div className={classes.fileInput}>
-                    <FileBase 
-                        type="file"
-                        multiple={false}
-                        onDone={({base64}) => setPostData({ ...postData, selectedFile: base64 })}
-                    />
+                    <input type="file" name="photo" onChange={(e) => setPostData({
+                        ...postData,
+                        photo: e.target.files[0] 
+                    })} />
                 </div>
                 <Button className={classes.buttonSubmit} 
                     variant="contained"
