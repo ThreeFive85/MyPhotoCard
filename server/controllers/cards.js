@@ -12,7 +12,7 @@ export const getCards = async (req, res) => {
 
     // const userEmail = req.email;
     // console.log("userEmail", userEmail);
-    const query = 'SELECT cards.id, title, message, tags, selectedFile, createAt, user_id, name, locked '
+    const query = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +`FROM cards INNER JOIN users on cards.user_id = users.id WHERE locked=?`;
 
     try {
@@ -38,7 +38,7 @@ export const getUserCards = async (req, res) => {
 
     const userEmail = req.userEmail;
 
-    const query = 'SELECT cards.id, title, message, tags, selectedFile, createAt, user_id, name, locked '
+    const query = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +'FROM cards INNER JOIN users on cards.user_id = users.id where user_id=?'
 
     try {
@@ -62,19 +62,23 @@ export const createCard = async (req, res) => {
     const connection = await pool.getConnection();
 
     const userEmail = req.userEmail;
-// console.log("userEmail", userEmail)
+    // console.log("userEmail", userEmail)
     const { title, message, tags, selectedFile } = req.body;
 
-    // console.log(req.body);
+    // console.log('req.body:', req.body);
 
-    const query = 'SELECT cards.id, title, message, tags, selectedFile, createAt, user_id, name, locked '
+    // console.log('req.file', req.file);
+
+    const img = req.file;
+
+    const query = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +'FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ?'
 
     try {
         const userId = await connection.query(`select id from users where email=?`, [userEmail]);
         // console.log(userId[0][0].id)
         const data = await connection.query('insert into cards set ?', { title: title, message: message,
-            tags: tags, selectedFile: selectedFile, locked: 'unlock', createAt: new Date().toISOString().substr(0,10),
+            tags: tags, selectedFile: img.location, locked: 'unlock',
             user_id: userId[0][0].id
         });
         const result = await connection.query(query, [data[0].insertId])
@@ -94,15 +98,17 @@ export const updateCard = async (req, res) => {
 
     const { title, message, tags, selectedFile } = req.body;
 
+    const img = req.file;
+
     const query1 = `UPDATE cards SET title=?, message=?, tags=?, selectedFile=? WHERE id= ${id}`
 
-    const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createAt, user_id, name, locked '
+    const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +`FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ${id}`
 
 
     try {
 
-        const [rows, fields] = await connection.execute(query1, [title, message, tags, selectedFile]);
+        const [rows, fields] = await connection.execute(query1, [title, message, tags, img.location]);
         console.log(rows);
 
         const result = await connection.execute(query2);
@@ -140,7 +146,7 @@ export const lockCard = async (req, res) => {
 
     const query1 = `UPDATE cards SET locked=? WHERE id= ${id}`;
 
-    const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createAt, user_id, name, locked '
+    const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +`FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ${id}`
 
 
