@@ -26,11 +26,12 @@ export const signup = async(req, res) => { // async, await
             password: hashedPassword, 
         })
 
-        const token = jwt.sign({ email: data.email }, tokenPassword, { expiresIn: "1h"});
-        const result = await connection.query('select * from users where id = ? ', [data[0].insertId]);
-        const resultData = result[0][0];
+        const resultData = await connection.query('select * from users where id = ? ', [data[0].insertId]);
         
-        res.status(202).json({ token, resultData });
+        const token = jwt.sign({ email: resultData[0][0].email }, tokenPassword, { expiresIn: "1h"});
+        const result = resultData[0][0];
+        // console.log('유저 결과', result)
+        res.status(202).json({ result: result, token });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: '서버에러' });
@@ -45,7 +46,7 @@ export const signin = async(req, res) => { // async, await
     const connection = await pool.getConnection();
 
     try {
-        const existingUser = await connection.query('select email, password from users where email = '+mysql.escape(req.body.email), {email:email} );
+        const existingUser = await connection.query('select * from users where email = '+mysql.escape(req.body.email), {email:email} );
         // console.log(existingUser[0][0].password)
         if(existingUser[0][0] === undefined) return res.status(404).json({ message: "유저를 찾을 수 없습니다" });
 
@@ -57,7 +58,7 @@ export const signin = async(req, res) => { // async, await
         //console.log("user", user)
 
         const token = jwt.sign({ email: user }, tokenPassword, { expiresIn: "1h"});
-
+// console.log("existingUser[0][0]", existingUser[0][0])
         res.status(200).json({ result: existingUser[0][0], token });
     } catch (err) {
         console.log(err);
