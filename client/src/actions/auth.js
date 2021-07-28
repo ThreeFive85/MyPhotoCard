@@ -10,7 +10,12 @@ export const signin = (formData, history) => async (dispatch) => {
 
         history.push('/');
     } catch (error) {
-        console.log(error);
+        // console.log(error.message);
+        if(error.response.status === 404){
+            alert(error.response.data.message)
+        } else {
+            console.log(error);
+        }
     }
 }
 
@@ -23,6 +28,11 @@ export const signup = (formData, history) => async (dispatch) => {
 
         history.push('/');
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        if(error.response.status === 404){
+            alert(error.response.data.message)
+        } else {
+            console.log(error);
+        }
     }
 }
