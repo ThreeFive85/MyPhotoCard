@@ -24,21 +24,15 @@ export const getUserCards = () => async (dispatch) => {
 
 export const createCard = (post) => async (dispatch) => {
     try {
-        // console.log('post', post.selectedFile)
-        // const formData = new FormData();
-        // formData.append("photo", post.selectedFile);
-        // console.log("formData", formData)
-        // try {
-        //     const res = await api.upload("/upload",post);
-        //           console.log("res.location", res.location);
-        //         } catch (ex) {
-        //           console.log(ex);
-        //         }
-        // const { data } = await api.createCard(post);
+        const { data } = await api.createCard(post);
         // console.log("createCard", data)
-        // dispatch({ type: CREATE, payload: data});
+        dispatch({ type: CREATE, payload: data});
     } catch (error) {
-        console.log(error);
+        if(error.response.status === 404){
+            alert(error.response.data.message)
+        } else {
+            console.log(error);
+        }
     }
 }
 
@@ -48,7 +42,7 @@ export const updateCard = (id, post) => async (dispatch) => {
 
         dispatch({type: UPDATE, payload: data});
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
     }
 }
 
