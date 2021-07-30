@@ -75,6 +75,11 @@ export const createCard = async (req, res) => {
     +'FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ?'
 
     try {
+        if(title === '' || message === '' || tags === '') {
+            return res.status(404).json({message: '데이터들을 모두 입력해주세요.'});
+        }
+        if(!req.file) return res.status(404).json({message: '사진을 등록해주세요.'});
+
         const userId = await connection.query(`select id from users where email=?`, [userEmail]);
         // console.log(userId[0][0].id)
         const data = await connection.query('insert into cards set ?', { title: title, message: message,
@@ -105,12 +110,11 @@ export const updateCard = async (req, res) => {
     const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +`FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ${id}`
 
-
     try {
 
         const [rows, fields] = await connection.execute(query1, [title, message, tags, img.location]);
         console.log(rows);
-
+        
         const result = await connection.execute(query2);
 
         res.json(result[0][0]);
