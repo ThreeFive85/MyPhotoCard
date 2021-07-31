@@ -63,7 +63,7 @@ export const createCard = async (req, res) => {
 
     const userEmail = req.userEmail;
     // console.log("userEmail", userEmail)
-    const { title, message, tags, selectedFile } = req.body;
+    const { title, message, tags } = req.body;
 
     // console.log('req.body:', req.body);
 
@@ -101,18 +101,18 @@ export const updateCard = async (req, res) => {
 
     const { id } = req.params;
 
-    const { title, message, tags, selectedFile } = req.body;
+    const { title, message, tags } = req.body;
 
-    const img = req.file;
+    // console.log(req.body);
 
-    const query1 = `UPDATE cards SET title=?, message=?, tags=?, selectedFile=? WHERE id= ${id}`
+    const query1 = `UPDATE cards SET title=?, message=?, tags=? WHERE id= ${id}`
 
     const query2 = 'SELECT cards.id, title, message, tags, selectedFile, createdAt, user_id, name, locked '
     +`FROM cards INNER JOIN users on cards.user_id = users.id where cards.id = ${id}`
 
     try {
 
-        const [rows, fields] = await connection.execute(query1, [title, message, tags, img.location]);
+        const [rows, fields] = await connection.execute(query1, [title, message, tags]);
         console.log(rows);
         
         const result = await connection.execute(query2);
