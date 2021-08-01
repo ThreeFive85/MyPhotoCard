@@ -35,7 +35,7 @@ const Form = ({currentId, setCurrentId}) => {
         data.append('name', user?.result?.name);
  
         if (currentId) {
-            dispatch(updateCard(currentId, data));
+            dispatch(updateCard(currentId, {...postData}));
             clear();
         } else {
             dispatch(createCard(data));
@@ -74,6 +74,59 @@ const Form = ({currentId, setCurrentId}) => {
         );
     };
 
+    if(currentId) {
+        return (
+            <Paper className={classes.paper}>
+                <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
+                    <Typography variant="h6">카드 {currentId ? '수정' : '등록'}</Typography>
+                    <TextField name="title" 
+                        variant="outlined" 
+                        label="제목" 
+                        fullWidth
+                        required
+                        value={postData.title}
+                        onChange={(e) => setPostData({
+                            ...postData,
+                            title: e.target.value
+                        })}
+                    />
+                    <TextField name="message" 
+                        variant="outlined" 
+                        label="메세지" 
+                        fullWidth
+                        required
+                        multiline
+                        rows={4}
+                        value={postData.message}
+                        onChange={(e) => setPostData({
+                            ...postData,
+                            message: e.target.value
+                        })}
+                    />
+                    <TextField name="tags" 
+                        variant="outlined" 
+                        label="태그들" 
+                        required
+                        fullWidth
+                        value={postData.tags}
+                        onChange={(e) => setPostData({
+                            ...postData,
+                            tags: e.target.value
+                        })}
+                    />
+                    <Button className={classes.buttonSubmit} 
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        type="submit"
+                        fullWidth >
+                            내용 수정
+                    </Button>
+                </form>
+            </Paper>
+        );
+    }
+
     return (
         <Paper className={classes.paper}>
             <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
@@ -82,6 +135,7 @@ const Form = ({currentId, setCurrentId}) => {
                     variant="outlined" 
                     label="제목" 
                     fullWidth
+                    required
                     value={postData.title}
                     onChange={(e) => setPostData({
                         ...postData,
@@ -92,6 +146,7 @@ const Form = ({currentId, setCurrentId}) => {
                     variant="outlined" 
                     label="메세지" 
                     fullWidth
+                    required
                     multiline
                     rows={4}
                     value={postData.message}
@@ -103,6 +158,7 @@ const Form = ({currentId, setCurrentId}) => {
                 <TextField name="tags" 
                     variant="outlined" 
                     label="태그들" 
+                    required
                     fullWidth
                     value={postData.tags}
                     onChange={(e) => setPostData({
