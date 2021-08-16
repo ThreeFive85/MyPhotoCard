@@ -30,20 +30,20 @@
 
 #### 회원가입
 
-![회원가입](gif/signup.gif)
+<img src=gif/signup.gif>
 
 #### 로그인
 
-![회원가입](gif/login.gif)
+<img src=gif/login.gif>
 
 #### 카드 등록
 
-![회원가입](gif/post.gif)
+<img src=gif/post.gif>
 
 #### 카드 수정
 
-![회원가입](gif/fix.gif)
+<img src=gif/fix.gif>
 
 #### 자신의 카드만 보기
 
-![회원가입](gif/mypost.gif)
+<img src=gif/mypost.gif>
