@@ -16,7 +16,6 @@ app.use(cors());
 app.use('/user', usersRoutes);
 app.use('/cards', cardsRoutes);
 
-
 const PORT = process.env.PORT || 4000;
 
 const connection = mysql.createConnection(db);
